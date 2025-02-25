@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio Digital</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            background-image: url('tela2.png');
+            background-size: cover;
+            background-position: center;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .categoria, .carrinho, .finalizacao {
+            background: rgb(243, 203, 129);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            width: 50%;
+            text-align: center;
+        }
+        .categoria .imagens {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+        .categoria img {
+            width: 150px;
+            height: auto;
+            margin: 20px;
+            cursor: pointer;
+        }
+        .botao-limpar {
+            margin-top: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: yellow;
+            border: none;
+            font-size: 14px;
+        }
+        .botao-finalizar {
+            margin-top: 10px;
+            padding: 15px 20px;
+            cursor: pointer;
+            background-color: red;
+            color: white;
+            border: none;
+            font-size: 18px;
+        }
+        label {
+            display: block;
+            text-align: center;
+        }
+    </style>
+    <script>
+        let carrinho = [];
+
+        function adicionarItem(nome, preco) {
+            let item = carrinho.find(i => i.nome === nome);
+            if (item) {
+                item.quantidade++;
+            } else {
+                carrinho.push({ nome, preco, quantidade: 1 });
+            }
+            atualizarCarrinho();
+        }
+
+        function atualizarCarrinho() {
+            let lista = document.getElementById("lista-carrinho");
+            lista.innerHTML = "";
+            let total = 0;
+            carrinho.forEach((item, index) => {
+                total += item.preco * item.quantidade;
+                lista.innerHTML += `<li>${item.quantidade}x ${item.nome} - R$${(item.preco * item.quantidade).toFixed(2)}
+                    <button onclick="removerItem(${index})">-</button>
+                    <button onclick="adicionarItem('${item.nome}', ${item.preco})">+</button>
+                </li>`;
+            });
+            document.getElementById("total").innerText = total.toFixed(2);
+        }
+
+        function removerItem(index) {
+            if (carrinho[index].quantidade > 1) {
+                carrinho[index].quantidade--;
+            } else {
+                carrinho.splice(index, 1);
+            }
+            atualizarCarrinho();
+        }
+
+        function limparSelecao() {
+            carrinho = [];
+            atualizarCarrinho();
+        }
+
+        function finalizarPedido() {
+            let nomeCliente = prompt("Qual é o seu nome completo?");
+            let enderecoCliente = prompt("Qual é o seu endereço para entrega?");
+            let formaPagamento = prompt("Qual a forma de pagamento? (Cartão de Débito/Crédito ou Pix)");
+            let resumoPedido = `Resumo do Pedido:\n\nItens:\n`;
+            carrinho.forEach(item => {
+                resumoPedido += `${item.quantidade}x ${item.nome} - R$${(item.preco * item.quantidade).toFixed(2)}\n`;
+            });
+            resumoPedido += `\nTotal: R$${document.getElementById("total").innerText}\n\n`;
+            resumoPedido += `Nome: ${nomeCliente}\nEndereço: ${enderecoCliente}\nForma de Pagamento: ${formaPagamento}`;
+            
+            if (confirm(`${resumoPedido}\n\nConfirmar pedido?`)) {
+                alert("Pedido confirmado! Obrigado.");
+            } else {
+                alert("Pedido cancelado.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1><img src="MENU2.png" alt="Cardápio Digital"></h1>
+        
+        <div class="categoria">
+            <h2>Hambúrguer</h2>
+            <div class="imagens">
+                <label>
+                    <img src="hamburguer.jpg" alt="Hambúrguer Clássico" onclick="adicionarItem('Hambúrguer Clássico', 15.00)"><br>
+                    <b>CLÁSSICO</b> <br>Hamburguer artesanal<br>com carne de 150g<br>salada e queijo <br> <b>R$15,00</b>
+                </label>
+                <label>
+                    <img src="hamburguerduplo.jpg" alt="Hambúrguer Duplo" onclick="adicionarItem('Hambúrguer Duplo', 20.00)"><br>
+                    <b>DUPLO</b> <br> Dois Hamburgueres artesanais <br>com carne de 150g<br>salada e queijo <br> <b>R$20,00</b>
+                </label>
+                <label>
+                    <img src="hamburguerbacon.jpg" alt="Hambúrguer Bacon" onclick="adicionarItem('Hambúrguer Bacon', 18.00)"><br>
+                    <b>BACON</b> <br> Hamburguer artesanal<br>com carne de 150g<br>salada,bacon e queijo <br> <b>R$15,00</b>
+                </label>
+            </div>
+        </div>
+
+        <div class="categoria">
+            <h2>Batata Frita</h2>
+            <div class="imagens">
+                <label>
+                    <img src="batatasimples.jpg" alt="Batata Simples" onclick="adicionarItem('Batata Simples', 8.00)"><br>
+                    <b>SIMPLES</b> <br> Batata crocante de 150g <BR><b>R$8,00</b>
+                </label>
+                <label>
+                    <img src="batatachedar.jpg" alt="Batata com Cheddar" onclick="adicionarItem('Batata com Cheddar', 12.00)"><br>
+                    <b>CHEDDAR</b> <br> Batata crocante de 250g <BR>+ CHEDDAR <BR> <b>R$12,00</b>
+                </label>
+                <label>
+                    <img src="batatbacon.jpg" alt="Batata com Bacon" onclick="adicionarItem('Batata com Bacon', 15.00)"><br>
+                    <b>BACON</b> <br>  Batata crocante de 350g <BR>+ CHEDDAR <BR>+ BACON <BR><b>R$15,00</b>
+                </label>
+            </div>
+        </div>
+        <div class="categoria">
+            <h2>Bebida</h2>
+            <div class="imagens">
+                <label>
+                    <img src="coca.jpg" alt="Coca-Cola" onclick="adicionarItem('Coca-Cola', 5.00, this)"><br>
+                    <b>COCA-COLA</b> <br> R$5,00
+                </label>
+                <label>
+                    <img src="guanrana.jpg" alt="Guaraná" onclick="adicionarItem('Guaraná', 5.00, this)"><br>
+                    <b>GUARANÁ</b> <br>R$5,00
+                </label>
+                <label>
+                    <img src="fanta.jpg" alt="Fanta Laranja" onclick="adicionarItem('Fanta Laranja', 5.00, this)"><br>
+                    <b>FANTA</b> <br> R$5,00
+                </label>
+            </div>
+        </div>
+
+        <div class="carrinho">
+            <h2>Carrinho</h2>
+            <ul id="lista-carrinho"></ul>
+            <p><strong>Total: R$<span id="total">0.00</span></strong></p>
+            <button class="botao-limpar" onclick="limparSelecao()">Limpar Seleção</button>
+        </div>
+        
+        <div class="finalizacao">
+            <button class="botao-finalizar" onclick="finalizarPedido()">Finalizar Pedido</button>
+        </div>
+    </div>
+</body>
+</html>
